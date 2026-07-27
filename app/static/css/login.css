@@ -1,0 +1,203 @@
+  :root {
+      --bleu-institutionnel: #145DA0;
+      --bleu-fonce: #0B3D66;
+      --jaune-accent: #FFD400;
+      --encre: #1C1F26;
+      --gris-texte: #5B6572;
+      --gris-bordure: #E4E8ED;
+  }
+
+  html,
+  body {
+      height: 100%;
+  }
+
+  body {
+      font-family: 'Inter', sans-serif;
+      color: var(--encre);
+      background: #F4F6F8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-titre {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+  }
+
+  /* Motif "repères" — identique à la page d'accueil, signature LABO ACADEMY */
+  .reperes {
+      position: relative;
+      display: inline-block;
+      padding: 0 .7em;
+  }
+
+  .reperes::before,
+  .reperes::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      bottom: -5px;
+      width: 11px;
+      border: 3px solid var(--jaune-accent);
+  }
+
+  .reperes::before {
+      left: -2px;
+      border-right: none;
+  }
+
+  .reperes::after {
+      right: -2px;
+      border-left: none;
+  }
+
+  /* Carte centrale */
+  .carte-connexion {
+      width: 100%;
+      max-width: 920px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(11, 61, 102, .12);
+      display: flex;
+      min-height: 560px;
+  }
+
+  .volet-formulaire {
+      flex: 1 1 50%;
+      padding: 3rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+  }
+
+  .volet-image {
+      flex: 1 1 50%;
+      position: relative;
+  }
+
+  .volet-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+  }
+
+  .volet-image .legende {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(0deg, rgba(11, 61, 102, .88) 0%, rgba(11, 61, 102, 0) 65%);
+      color: #fff;
+      padding: 2.2rem 2rem 1.6rem;
+  }
+
+  .volet-image .legende p {
+      font-size: .92rem;
+      color: rgba(255, 255, 255, .9);
+      margin-bottom: 0;
+  }
+
+  .volet-image .legende .font-titre {
+      font-size: 1.15rem;
+      margin-bottom: .3rem;
+  }
+
+  .eyebrow {
+      font-family: 'Poppins', sans-serif;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--bleu-institutionnel);
+      margin-bottom: .5rem;
+  }
+
+  .message-accueil h2 {
+      font-size: 1.5rem;
+      margin-bottom: .5rem;
+  }
+
+  .message-accueil p {
+      color: var(--gris-texte);
+      font-size: .94rem;
+      margin-bottom: 2rem;
+  }
+
+  .form-label {
+      font-weight: 500;
+      font-size: .9rem;
+      color: var(--encre);
+  }
+
+  .form-control {
+      border: 1px solid var(--gris-bordure);
+      border-radius: 5px;
+      padding: .65rem .9rem;
+      font-size: .95rem;
+  }
+
+  .form-control:focus {
+      border-color: var(--bleu-institutionnel);
+      box-shadow: 0 0 0 .2rem rgba(20, 93, 160, .12);
+  }
+
+  .lien-mdp-oublie {
+      font-size: .85rem;
+      color: var(--bleu-institutionnel);
+      font-weight: 500;
+  }
+
+  .lien-mdp-oublie:hover {
+      color: var(--bleu-fonce);
+  }
+
+  .btn-connexion {
+      background: var(--bleu-institutionnel);
+      color: #fff;
+      font-weight: 600;
+      padding: .75rem 1rem;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+  }
+
+  .btn-connexion:hover {
+      background: var(--bleu-fonce);
+      color: #fff;
+  }
+
+  .separation-bas {
+      text-align: center;
+      font-size: .88rem;
+      color: var(--gris-texte);
+      margin-top: 1.8rem;
+  }
+
+  .separation-bas a {
+      color: var(--bleu-institutionnel);
+      font-weight: 600;
+  }
+
+  @media (max-width: 767.98px) {
+      .carte-connexion {
+          flex-direction: column;
+          min-height: auto;
+      }
+
+      .volet-image {
+          order: -1;
+          height: 200px;
+      }
+
+      .volet-formulaire {
+          padding: 2.2rem 1.6rem;
+      }
+  }
