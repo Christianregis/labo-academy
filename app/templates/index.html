@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LABO ACADEMY — Devenez plus fort</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons (réseaux sociaux uniquement) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<!-- Typographie : Poppins (titres) + Inter (texte courant) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bleu-institutionnel: #145DA0;
+    --bleu-fonce: #0B3D66;
+    --jaune-accent: #FFD400;
+    --encre: #1C1F26;
+    --gris-texte: #5B6572;
+    --gris-bordure: #E4E8ED;
+  }
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Inter', sans-serif;
+    font-weight:400;
+    color:var(--encre);
+    background:#FFFFFF;
+  }
+
+  h1,h2,h3,h4,.font-titre{
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+  }
+
+  a{text-decoration:none;}
+
+  /* Motif "repères" inspiré des crochets du logo — signature visuelle du site */
+  .reperes{
+    position:relative;
+    display:inline-block;
+    padding:0 .85em;
+  }
+  .reperes::before,
+  .reperes::after{
+    content:"";
+    position:absolute;
+    top:-6px; bottom:-6px;
+    width:14px;
+    border:3px solid var(--jaune-accent);
+  }
+  .reperes::before{left:-2px; border-right:none;}
+  .reperes::after{right:-2px; border-left:none;}
+
+  .eyebrow{
+    font-family:'Poppins', sans-serif;
+    font-size:.78rem;
+    font-weight:600;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--bleu-institutionnel);
+  }
+
+  /* Navbar */
+  .navbar-labo{
+    background:#FFFFFF;
+    box-shadow:0 2px 14px rgba(11,61,102,.08);
+  }
+  .navbar-labo .nav-link{
+    color:var(--encre);
+    font-weight:500;
+    margin:0 .6rem;
+  }
+  .navbar-labo .nav-link:hover{color:var(--bleu-institutionnel);}
+  .navbar-labo .logo-img{height:48px;}
+
+  .btn-institutionnel{
+    background:var(--bleu-institutionnel);
+    color:#fff;
+    font-weight:600;
+    border:none;
+    padding:.65rem 1.6rem;
+    border-radius:4px;
+  }
+  .btn-institutionnel:hover{background:var(--bleu-fonce); color:#fff;}
+
+  .btn-accent{
+    background:var(--jaune-accent);
+    color:var(--bleu-fonce);
+    font-weight:700;
+    border:none;
+    padding:.75rem 2rem;
+    border-radius:4px;
+  }
+  .btn-accent:hover{background:#E8C000; color:var(--bleu-fonce);}
+
+  .btn-outline-institutionnel{
+    border:2px solid var(--bleu-institutionnel);
+    color:var(--bleu-institutionnel);
+    font-weight:600;
+    padding:.6rem 1.6rem;
+    border-radius:4px;
+    background:transparent;
+  }
+  .btn-outline-institutionnel:hover{background:var(--bleu-institutionnel); color:#fff;}
+
+  /* Hero */
+  .hero{padding:6.5rem 0 5rem;}
+  .hero h1{
+    font-size:2.9rem;
+    line-height:1.15;
+    margin-bottom:1.3rem;
+  }
+  .hero .slogan{
+    color:var(--bleu-institutionnel);
+    display:block;
+  }
+  .hero p.lead-text{
+    color:var(--gris-texte);
+    font-size:1.08rem;
+    max-width:520px;
+  }
+  .hero-img{
+    border-radius:6px;
+    width:100%;
+    height:460px;
+    object-fit:cover;
+    box-shadow:0 20px 45px rgba(11,61,102,.15);
+  }
+
+  /* Sections génériques */
+  section{padding:5rem 0;}
+  .titre-section{font-size:2.1rem; margin-bottom:.75rem;}
+  .sous-titre-section{color:var(--gris-texte); max-width:620px; margin:0 auto;}
+
+  .fond-clair{background:#F7F9FB;}
+
+  /* Cartes "Pourquoi nous choisir" */
+  .carte-atout{
+    border:1px solid var(--gris-bordure);
+    border-radius:6px;
+    padding:2rem 1.6rem;
+    height:100%;
+    background:#fff;
+    transition:box-shadow .2s ease, border-color .2s ease;
+  }
+  .carte-atout:hover{
+    box-shadow:0 10px 30px rgba(11,61,102,.08);
+    border-color:var(--bleu-institutionnel);
+  }
+  .icone-atout{
+    width:52px; height:52px;
+    border-radius:50%;
+    background:rgba(20,93,160,.08);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--bleu-institutionnel);
+    font-size:1.4rem;
+    margin-bottom:1.1rem;
+  }
+  .carte-atout h3{font-size:1.15rem; margin-bottom:.6rem;}
+  .carte-atout p{color:var(--gris-texte); font-size:.95rem; margin-bottom:0;}
+
+  /* Chiffres clés */
+  .bloc-chiffre{text-align:center; padding:1rem;}
+  .bloc-chiffre .valeur{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:2.6rem;
+    color:var(--bleu-institutionnel);
+    display:block;
+    line-height:1;
+  }
+  .bloc-chiffre .valeur .accent-jaune{color:var(--jaune-accent);}
+  .bloc-chiffre .libelle{
+    color:var(--gris-texte);
+    font-size:.95rem;
+    margin-top:.5rem;
+  }
+
+  /* Formations */
+  .carte-formation{
+    border:1px solid var(--gris-bordure);
+    border-radius:6px;
+    overflow:hidden;
+    height:100%;
+    background:#fff;
+  }
+  .carte-formation img{
+    width:100%; height:210px; object-fit:cover;
+  }
+  .carte-formation .corps{padding:1.5rem;}
+  .carte-formation h3{font-size:1.1rem; margin-bottom:.6rem;}
+  .carte-formation p{color:var(--gris-texte); font-size:.93rem;}
+
+  /* Témoignages */
+  .carte-temoignage{
+    border:1px solid var(--gris-bordure);
+    border-radius:6px;
+    padding:1.8rem;
+    height:100%;
+    background:#fff;
+  }
+  .carte-temoignage img{
+    width:56px; height:56px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-right:.9rem;
+  }
+  .carte-temoignage p.avis{
+    color:var(--gris-texte);
+    font-size:.95rem;
+    font-style:italic;
+    margin-top:1rem;
+    margin-bottom:0;
+  }
+  .carte-temoignage .nom{font-weight:600; margin-bottom:0;}
+  .carte-temoignage .filiere{color:var(--gris-texte); font-size:.85rem;}
+
+  /* Appel à l'action */
+  .cta-section{
+    background:var(--bleu-fonce);
+    color:#fff;
+    text-align:center;
+    padding:5.5rem 0;
+  }
+  .cta-section h2{color:#fff; font-size:2.3rem;}
+  .cta-section p{color:rgba(255,255,255,.85); max-width:560px; margin:0 auto 2rem;}
+
+  /* Footer */
+  footer{
+    background:var(--bleu-fonce);
+    color:rgba(255,255,255,.85);
+    padding:3.5rem 0 1.5rem;
+  }
+  footer h5{
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    color:#fff;
+    font-size:1rem;
+    margin-bottom:1.1rem;
+  }
+  footer a{color:rgba(255,255,255,.75);}
+  footer a:hover{color:var(--jaune-accent);}
+  footer .logo-footer{height:42px; margin-bottom:1rem;}
+  footer .separateur{
+    border-top:1px solid rgba(255,255,255,.15);
+    margin-top:2.5rem;
+    padding-top:1.5rem;
+    font-size:.85rem;
+    color:rgba(255,255,255,.55);
+  }
+  .reseaux-sociaux a{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:38px; height:38px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:50%;
+    margin-right:.5rem;
+  }
+
+  @media (max-width: 767.98px){
+    .hero{padding:3.2rem 0 2.5rem; text-align:center;}
+    .hero h1{font-size:2.2rem;}
+    .hero p.lead-text{margin:0 auto 1.5rem;}
+    .hero-img{height:280px; margin-top:2rem;}
+    .cta-section h2{font-size:1.8rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAVIGATION ============ -->
+<nav class="navbar navbar-expand-lg navbar-labo fixed-top py-3">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#accueil">
+      <img src="{{ url_for('static', filename='images/labo-academy.jpg') }}" alt="Logo LABO ACADEMY" class="logo-img">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Ouvrir le menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menuPrincipal">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="#accueil">Accueil</a></li>
+        <li class="nav-item"><a class="nav-link" href="#formations">Formations</a></li>
+        <li class="nav-item"><a class="nav-link" href="#apropos">À propos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+      <div class="d-flex gap-2 mt-3 mt-lg-0">
+        <a href="#connexion" class="btn btn-outline-institutionnel btn-sm">Se connecter</a>
+        <a href="#inscription" class="btn btn-institutionnel btn-sm">S'inscrire</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="accueil" style="margin-top:84px;">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <p class="eyebrow mb-3">Centre de formation professionnalisante</p>
+        <h1>
+          <span class="reperes slogan">DEVENEZ PLUS FORT</span>
+        </h1>
+        <p class="lead-text">
+          LABO ACADEMY est un centre de formation moderne dédié à la réussite des étudiants
+          et au développement des compétences professionnelles. Nous accompagnons chaque
+          apprenant vers l'excellence académique et une insertion réussie sur le marché de l'emploi.
+        </p>
+        <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+          <a href="#inscription" class="btn btn-accent">Commencer maintenant</a>
+          <a href="#formations" class="btn btn-outline-institutionnel">Découvrir les formations</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <img src="{{ url_for('static', filename='images/hero.webp') }}" alt="Étudiants en formation avec un enseignant" class="hero-img">
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ POURQUOI NOUS CHOISIR ============ -->
+<section id="apropos">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="eyebrow mb-2">Notre engagement</p>
+      <h2 class="titre-section">Pourquoi choisir LABO ACADEMY ?</h2>
+      <p class="sous-titre-section">Une pédagogie exigeante, un encadrement de proximité et un objectif unique : votre réussite.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-atout">
+          <div class="icone-atout"><i class="bi bi-mortarboard"></i></div>
+          <h3>Formations professionnalisantes</h3>
+          <p>Des programmes construits avec les réalités du marché de l'emploi, pour des compétences directement applicables.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-atout">
+          <div class="icone-atout"><i class="bi bi-people"></i></div>
+          <h3>Encadrement de qualité</h3>
+          <p>Des formateurs expérimentés, disponibles et exigeants, au service de la progression de chaque étudiant.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-atout">
+          <div class="icone-atout"><i class="bi bi-person-check"></i></div>
+          <h3>Accompagnement personnalisé</h3>
+          <p>Un suivi individuel qui tient compte du rythme, des difficultés et des objectifs de chaque apprenant.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-atout">
+          <div class="icone-atout"><i class="bi bi-graph-up-arrow"></i></div>
+          <h3>Développement des compétences</h3>
+          <p>Une progression mesurée et continue, du niveau initial jusqu'à la maîtrise professionnelle.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-atout">
+          <div class="icone-atout"><i class="bi bi-briefcase"></i></div>
+          <h3>Préparation au marché de l'emploi</h3>
+          <p>Ateliers, mises en situation et suivi post-formation pour une insertion professionnelle réussie.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-atout">
+          <div class="icone-atout"><i class="bi bi-clipboard-data"></i></div>
+          <h3>Suivi pédagogique</h3>
+          <p>Des évaluations régulières et une communication transparente sur les progrès réalisés.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NOS CHIFFRES ============ -->
+<section class="fond-clair">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-6 col-lg-3">
+        <div class="bloc-chiffre">
+          <span class="valeur">1<span class="accent-jaune">200</span>+</span>
+          <p class="libelle">Étudiants formés</p>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="bloc-chiffre">
+          <span class="valeur">18</span>
+          <p class="libelle">Programmes</p>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="bloc-chiffre">
+          <span class="valeur">92<span class="accent-jaune">%</span></span>
+          <p class="libelle">Taux de réussite</p>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="bloc-chiffre">
+          <span class="valeur">20</span>
+          <p class="libelle">Encadreurs</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LES FORMATIONS ============ -->
+<section id="formations">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="eyebrow mb-2">Notre offre</p>
+      <h2 class="titre-section">Les formations</h2>
+      <p class="sous-titre-section">Des parcours conçus pour répondre aux besoins concrets des étudiants et des professionnels.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-formation">
+          <img src="{{ url_for('static', filename='images/image2-labo.jpg') }}" alt="Formation informatique et outils numériques">
+          <div class="corps">
+            <h3>Informatique &amp; outils numériques</h3>
+            <p>Bureautique avancée, développement web et gestion de données pour les métiers du numérique.</p>
+            <a href="#" class="btn btn-outline-institutionnel btn-sm mt-2">En savoir plus</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-formation">
+          <img src="{{ url_for('static', filename='images/image2-labo.jpg') }}" alt="Accompagnement scolaire personnalisé">
+          <div class="corps">
+            <h3>Renforcement académique</h3>
+            <p>Soutien scolaire et remise à niveau, avec un suivi individuel des progrès de chaque élève.</p>
+            <a href="#" class="btn btn-outline-institutionnel btn-sm mt-2">En savoir plus</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="carte-formation">
+          <img src="{{ url_for('static', filename='images/image2-labo.jpg') }}" alt="Formation professionnelle et développement des compétences">
+          <div class="corps">
+            <h3>Développement professionnel</h3>
+            <p>Compétences transversales, communication et méthodologie pour réussir sa transition vers l'emploi.</p>
+            <a href="#" class="btn btn-outline-institutionnel btn-sm mt-2">En savoir plus</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TÉMOIGNAGES ============ -->
+<section class="fond-clair">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="eyebrow mb-2">Ils nous font confiance</p>
+      <h2 class="titre-section">Témoignages</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="carte-temoignage">
+          <div class="d-flex align-items-center">
+            <img src="{{ url_for('static', filename='images/user.png') }}" alt="Portrait d'une ancienne étudiante">
+            <div>
+              <p class="nom">Aïcha N.</p>
+              <p class="filiere">Formation en gestion</p>
+            </div>
+          </div>
+          <p class="avis">« L'encadrement personnalisé m'a permis de reprendre confiance et d'obtenir mon diplôme avec de bons résultats. »</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="carte-temoignage">
+          <div class="d-flex align-items-center">
+            <img src="{{ url_for('static', filename='images/user.png') }}" alt="Portrait d'un ancien étudiant">
+            <div>
+              <p class="nom">Marc E.</p>
+              <p class="filiere">Formation en informatique</p>
+            </div>
+          </div>
+          <p class="avis">« Une pédagogie rigoureuse et des formateurs disponibles. J'ai trouvé un emploi trois mois après ma sortie. »</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="carte-temoignage">
+          <div class="d-flex align-items-center">
+            <img src="{{ url_for('static', filename='images/user.png') }}" alt="Portrait d'un ancien étudiant">
+            <div>
+              <p class="nom">Junior K.</p>
+              <p class="filiere">Renforcement académique</p>
+            </div>
+          </div>
+          <p class="avis">« Le suivi régulier de mes progrès m'a aidé à combler mes lacunes et à réussir mon année scolaire. »</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPEL À L'ACTION ============ -->
+<section class="cta-section" id="inscription">
+  <div class="container">
+    <h2 class="mb-3"><span class="reperes">DEVENEZ PLUS FORT</span></h2>
+    <p>Rejoignez dès aujourd'hui LABO ACADEMY et préparez votre avenir grâce à une formation de qualité.</p>
+    <a href="#contact" class="btn btn-accent">S'inscrire maintenant</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="contact">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <img src="{{ url_for('static', filename='images/labo-academy.jpg') }}" alt="Logo LABO ACADEMY" class="logo-footer w-50 h-50">
+        <p class="small">Centre de formation professionnalisante dédié à la réussite académique et à l'insertion professionnelle.</p>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h5>Navigation</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="#accueil">Accueil</a></li>
+          <li class="mb-2"><a href="#formations">Formations</a></li>
+          <li class="mb-2"><a href="#apropos">À propos</a></li>
+          <li class="mb-2"><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-3">
+        <h5>Coordonnées</h5>
+        <ul class="list-unstyled small">
+          <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Douala, Cameroun</li>
+          <li class="mb-2"><i class="bi bi-telephone me-2"></i>+237 6XX XXX XXX</li>
+          <li class="mb-2"><i class="bi bi-envelope me-2"></i>contact@laboacademy.cm</li>
+        </ul>
+      </div>
+      <div class="col-lg-3">
+        <h5>Suivez-nous</h5>
+        <div class="reseaux-sociaux">
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="separateur text-center">
+      © 2026 LABO ACADEMY — Tous droits réservés.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
