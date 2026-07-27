@@ -1,58 +1,105 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connexion — LABO ACADEMY</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion — LABO ACADEMY</title>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/auth.css') }}"
+    />
+  </head>
+  <body>
+    <div class="carte-connexion">
+      <div class="volet-formulaire">
+        <img
+          src="{{ url_for('static', filename='images/labo-academy.jpg') }}"
+          alt="Logo LABO ACADEMY"
+          class="w-50 h-50 align-self-center mb-2"
+        />
 
-<div class="carte-connexion">
+        <div class="message-accueil">
+          <h2>Bienvenue sur votre espace LABO ACADEMY</h2>
+          <p>
+            Connectez-vous pour accéder à votre suivi pédagogique, vos
+            formations et vos résultats.
+          </p>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for categorie, message in messages %}
+        <div
+          class="alert {{ 'alert-success' if categorie == 'success' else 'alert-danger' }} py-2 mb-3"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
 
-  <div class="volet-formulaire">
-    <img src="{{ url_for('static', filename='images/labo-academy.jpg') }}" alt="Logo LABO ACADEMY" class="w-50 h-50 align-self-center mb-2">
+        <form method="POST" action="{{ url_for('auth.login') }}">
+          <div class="mb-3">
+            <label for="champEmail" class="form-label">Adresse email</label>
+            <input
+              type="email"
+              name="email"
+              class="form-control"
+              id="champEmail"
+              placeholder="nom@exemple.com"
+              required
+            />
+          </div>
 
-    <div class="message-accueil">
-      <h2>Bienvenue sur votre espace LABO ACADEMY</h2>
-      <p>Connectez-vous pour accéder à votre suivi pédagogique, vos formations et vos résultats.</p>
+          <div class="mb-2">
+            <label for="champMotDePasse" class="form-label">Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              class="form-control"
+              id="champMotDePasse"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <div class="text-end mb-4">
+            <a href="#" class="lien-mdp-oublie">Mot de passe oublié ?</a>
+          </div>
+
+          <button type="submit" class="btn btn-connexion">Se connecter</button>
+        </form>
+
+        <p class="separation-bas">
+          Pas encore de compte ?
+          <a href="{{ url_for('main.register')}} ">Créer un compte</a>
+        </p>
+      </div>
+
+      <div class="volet-image d-none d-md-block">
+        <img
+          src="{{ url_for('static', filename='images/image-etudiant.avif')}}"
+          alt="Étudiants célébrant leur réussite académique"
+        />
+        <div class="legende">
+          <p class="font-titre">
+            <span class="reperes">DEVENEZ PLUS FORT</span>
+          </p>
+          <p>
+            Rejoignez une communauté engagée dans la réussite académique et
+            professionnelle.
+          </p>
+        </div>
+      </div>
     </div>
-
-    <form>
-      <div class="mb-3">
-        <label for="champEmail" class="form-label">Adresse email</label>
-        <input type="email" class="form-control" id="champEmail" placeholder="nom@exemple.com" required>
-      </div>
-
-      <div class="mb-2">
-        <label for="champMotDePasse" class="form-label">Mot de passe</label>
-        <input type="password" class="form-control" id="champMotDePasse" placeholder="••••••••" required>
-      </div>
-
-      <div class="text-end mb-4">
-        <a href="#" class="lien-mdp-oublie">Mot de passe oublié ?</a>
-      </div>
-
-      <button type="submit" class="btn btn-connexion">Se connecter</button>
-    </form>
-
-    <p class="separation-bas">Pas encore de compte ? <a href="{{ url_for('main.register')}} ">Créer un compte</a></p>
-  </div>
-
-  <div class="volet-image d-none d-md-block">
-    <img src="{{ url_for('static', filename='images/image-etudiant.avif')}}" alt="Étudiants célébrant leur réussite académique">
-    <div class="legende">
-      <p class="font-titre"><span class="reperes">DEVENEZ PLUS FORT</span></p>
-      <p>Rejoignez une communauté engagée dans la réussite académique et professionnelle.</p>
-    </div>
-  </div>
-
-</div>
-
-</body>
+  </body>
 </html>
