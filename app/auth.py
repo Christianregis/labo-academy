@@ -48,6 +48,7 @@ def login():
 
         if utilisateur is None or not utilisateur.check_password(password):
             flash("Email ou mot de passe incorrect.", "error")
+            print(f"{utilisateur}")
             return redirect(url_for('auth.login'))
 
         login_user(utilisateur)
