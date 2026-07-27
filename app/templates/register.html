@@ -19,11 +19,16 @@
     <img src="{{ url_for('static', filename='images/labo-academy.jpg') }}" alt="Logo LABO ACADEMY" class="w-50 h-50 align-self-center mb-2">
 
     <div class="message-accueil">
-      <h2>Bienvenue sur votre espace LABO ACADEMY</h2>
-      <p>Connectez-vous pour accéder à votre suivi pédagogique, vos formations et vos résultats.</p>
+      <h2>Bienvenue sur LABO ACADEMY</h2>
+      <p>Inscrivez vous et demarrer votre apprentissage ainsi que votre remise a niveau avec des experts du domaine</p>
     </div>
 
     <form>
+      <div class="mb-3">
+        <label for="champUsername" class="form-label">Nom Complet</label>
+        <input type="text" class="form-control" id="champUsername" placeholder="Jean Dupont" required>
+      </div>
+
       <div class="mb-3">
         <label for="champEmail" class="form-label">Adresse email</label>
         <input type="email" class="form-control" id="champEmail" placeholder="nom@exemple.com" required>
@@ -34,18 +39,19 @@
         <input type="password" class="form-control" id="champMotDePasse" placeholder="••••••••" required>
       </div>
 
-      <div class="text-end mb-4">
-        <a href="#" class="lien-mdp-oublie">Mot de passe oublié ?</a>
+      <div class="mb-2">
+        <label for="champConfirmMotDePasse" class="form-label">Confirmer le Mot de passe</label>
+        <input type="password" class="form-control" id="champConfirmMotDePasse" placeholder="••••••••" required>
       </div>
 
-      <button type="submit" class="btn btn-connexion">Se connecter</button>
+      <button type="submit" class="btn btn-inscription">S'inscrire</button>
     </form>
 
-    <p class="separation-bas">Pas encore de compte ? <a href="{{ url_for('main.register')}} ">Créer un compte</a></p>
+    <p class="separation-bas">Deja un compte ? <a href="{{ url_for('main.login') }}">Se Connecter</a></p>
   </div>
 
   <div class="volet-image d-none d-md-block">
-    <img src="{{ url_for('static', filename='images/image-etudiant.avif')}}" alt="Étudiants célébrant leur réussite académique">
+    <img src="{{ url_for('static', filename='images/image2-labo.jpg')}}" alt="Étudiants célébrant leur réussite académique">
     <div class="legende">
       <p class="font-titre"><span class="reperes">DEVENEZ PLUS FORT</span></p>
       <p>Rejoignez une communauté engagée dans la réussite académique et professionnelle.</p>

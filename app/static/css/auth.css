@@ -2,6 +2,7 @@
       --bleu-institutionnel: #145DA0;
       --bleu-fonce: #0B3D66;
       --jaune-accent: #FFD400;
+      --jaune-fonce: #a08d2c;
       --encre: #1C1F26;
       --gris-texte: #5B6572;
       --gris-bordure: #E4E8ED;
@@ -171,6 +172,21 @@
 
   .btn-connexion:hover {
       background: var(--bleu-fonce);
+      color: #fff;
+  }
+
+  .btn-inscription {
+      background: var(--jaune-accent);
+      color: #fff;
+      font-weight: 600;
+      padding: .75rem 1rem;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+  }
+
+  .btn-inscription:hover {
+      background: var(--jaune-fonce);
       color: #fff;
   }
 

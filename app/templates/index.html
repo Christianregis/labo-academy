@@ -35,7 +35,7 @@
       </ul>
       <div class="d-flex gap-2 mt-3 mt-lg-0">
         <a href="{{ url_for('main.login') }}" class="btn btn-outline-institutionnel btn-sm">Se connecter</a>
-        <a href="#inscription" class="btn btn-institutionnel btn-sm">S'inscrire</a>
+        <a href="{{ url_for('main.register') }}" class="btn btn-institutionnel btn-sm">S'inscrire</a>
       </div>
     </div>
   </div>
@@ -250,7 +250,7 @@
   <div class="container">
     <h2 class="mb-3"><span class="reperes">DEVENEZ PLUS FORT</span></h2>
     <p>Rejoignez dès aujourd'hui LABO ACADEMY et préparez votre avenir grâce à une formation de qualité.</p>
-    <a href="#contact" class="btn btn-accent">S'inscrire maintenant</a>
+    <a href="{{ url_for('main.register') }}" class="btn btn-accent">S'inscrire maintenant</a>
   </div>
 </section>
 
