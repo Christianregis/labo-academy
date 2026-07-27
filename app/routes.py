@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
+from app.models import Etablissement, Classe, Enseignant, Eleve, ResultatAnnuel, Note, Absence, Matiere
 
 main = Blueprint('main', __name__)
 
@@ -18,4 +19,14 @@ def register():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('admin/dashboard.html')
+    stats = {
+        'etablissements': 6,
+        'classes': 4,
+        'enseignants': 12,
+        'eleves': 120,
+        'matieres': 8,
+        'notes': 480,
+        'absences': 24,
+        'resultats': 10,
+    }
+    return render_template('admin/dashboard.html', stats=stats)

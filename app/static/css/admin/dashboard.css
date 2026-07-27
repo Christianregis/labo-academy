@@ -1,0 +1,229 @@
+      :root {
+          --bleu-institutionnel: #145da0;
+          --bleu-fonce: #0b3d66;
+          --jaune-accent: #ffd400;
+          --encre: #1c1f26;
+          --gris-texte: #5b6572;
+          --gris-bordure: #e4e8ed;
+          --fond-page: #f4f6f8;
+      }
+
+      body {
+          font-family: "Inter", sans-serif;
+          color: var(--encre);
+          background: var(--fond-page);
+          margin: 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      .font-titre {
+          font-family: "Poppins", sans-serif;
+          font-weight: 700;
+      }
+
+      /* ---- Sidebar ---- */
+      .sidebar-labo {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 240px;
+          background: var(--bleu-fonce);
+          padding: 1.6rem 1rem;
+          overflow-y: auto;
+      }
+
+      .sidebar-logo {
+          background: #fff;
+          border-radius: 6px;
+          padding: 0.6rem;
+          text-align: center;
+          margin-bottom: 1.8rem;
+          width: auto;
+          height: auto;
+      }
+
+      .sidebar-logo img {
+          height: 38px;
+      }
+
+      .sidebar-nav {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+      }
+
+      .sidebar-link {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          color: rgba(255, 255, 255, 0.75);
+          font-size: 0.92rem;
+          font-weight: 500;
+          padding: 0.65rem 0.8rem;
+          border-radius: 5px;
+          border-left: 3px solid transparent;
+      }
+
+      .sidebar-link i {
+          font-size: 1rem;
+      }
+
+      .sidebar-link:hover {
+          background: rgba(255, 255, 255, 0.06);
+          color: #fff;
+      }
+
+      .sidebar-link.active {
+          background: rgba(255, 255, 255, 0.08);
+          color: #fff;
+          border-left: 3px solid var(--jaune-accent);
+      }
+
+      /* ---- Zone principale ---- */
+      .contenu-principal {
+          margin-left: 240px;
+      }
+
+      .topbar-labo {
+          background: #fff;
+          box-shadow: 0 2px 10px rgba(11, 61, 102, 0.06);
+          padding: 0.9rem 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+      }
+
+      .btn-utilisateur {
+          background: none;
+          border: none;
+          font-weight: 600;
+          color: var(--encre);
+          padding: 0.4rem 0.6rem;
+      }
+
+      .btn-utilisateur i {
+          color: var(--bleu-institutionnel);
+          font-size: 1.3rem;
+      }
+
+      .topbar-droite {
+          display: flex;
+          gap: 0.7rem;
+      }
+
+      .btn-institutionnel {
+          background: var(--bleu-institutionnel);
+          color: #fff;
+          font-weight: 600;
+          border: none;
+      }
+
+      .btn-institutionnel:hover {
+          background: var(--bleu-fonce);
+          color: #fff;
+      }
+
+      .btn-outline-institutionnel {
+          border: 1.5px solid var(--bleu-institutionnel);
+          color: var(--bleu-institutionnel);
+          font-weight: 600;
+          background: transparent;
+      }
+
+      .btn-outline-institutionnel:hover {
+          background: var(--bleu-institutionnel);
+          color: #fff;
+      }
+
+      .zone-contenu {
+          padding: 2rem;
+      }
+
+      .eyebrow {
+          font-family: "Poppins", sans-serif;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--bleu-institutionnel);
+      }
+
+      .titre-page {
+          font-size: 1.6rem;
+          margin: 0.3rem 0 1.8rem;
+      }
+
+      /* ---- Cartes de comptage ---- */
+      .carte-stat {
+          background: #fff;
+          border: 1px solid var(--gris-bordure);
+          border-radius: 8px;
+          padding: 1.4rem 1.5rem;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          height: 100%;
+      }
+
+      .icone-stat {
+          width: 48px;
+          height: 48px;
+          border-radius: 8px;
+          background: rgba(20, 93, 160, 0.08);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--bleu-institutionnel);
+          font-size: 1.3rem;
+          flex-shrink: 0;
+      }
+
+      .icone-stat.accent {
+          background: rgba(255, 212, 0, 0.18);
+          color: #8a6d00;
+      }
+
+      .stat-valeur {
+          font-family: "Poppins", sans-serif;
+          font-weight: 800;
+          font-size: 1.7rem;
+          color: var(--bleu-fonce);
+          line-height: 1;
+      }
+
+      .stat-libelle {
+          color: var(--gris-texte);
+          font-size: 0.85rem;
+          margin-top: 0.3rem;
+      }
+
+      /* ---- Graphique ---- */
+      .carte-graphique {
+          background: #fff;
+          border: 1px solid var(--gris-bordure);
+          border-radius: 8px;
+          padding: 1.8rem;
+          margin-top: 2rem;
+      }
+
+      .carte-graphique h2 {
+          font-size: 1.15rem;
+          margin-bottom: 1.4rem;
+      }
+
+      @media (max-width: 991.98px) {
+          .sidebar-labo {
+              transform: translateX(-100%);
+              transition: transform 0.2s;
+          }
+
+          .contenu-principal {
+              margin-left: 0;
+          }
+      }
