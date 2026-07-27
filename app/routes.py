@@ -20,13 +20,13 @@ def register():
 @login_required
 def dashboard():
     stats = {
-        'etablissements': 6,
-        'classes': 4,
-        'enseignants': 12,
-        'eleves': 120,
-        'matieres': 8,
-        'notes': 480,
-        'absences': 24,
-        'resultats': 10,
+        'etablissements': Etablissement.query.count(),
+        'classes': Classe.query.count(),
+        'enseignants': Enseignant.query.count(),
+        'eleves': Eleve.query.count(),
+        'matieres': Matiere.query.count(),
+        'notes': Note.query.count(),
+        'absences': Absence.query.count(),
+        'resultats': ResultatAnnuel.query.count(),
     }
     return render_template('admin/dashboard.html', stats=stats)
