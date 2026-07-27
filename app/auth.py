@@ -51,8 +51,13 @@ def login():
             return redirect(url_for('auth.login'))
 
         login_user(utilisateur)
-        flash(f"Bienvenue, {utilisateur.username} !", "success")
-        return redirect(url_for('main.dashboard'))
+        
+        if utilisateur.role == 'admin':
+            flash(f"Bienvenue, {utilisateur.username} (Administrateur) !", "success")
+            return redirect(url_for('main.dashboard'))
+        else:
+            flash(f"Bienvenue, {utilisateur.username} (Utilisateur) !", "success")
+            return redirect(url_for('main.index'))
 
     return render_template('login.html')
 
