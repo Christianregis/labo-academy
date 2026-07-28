@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des absences — LABO ACADEMY</title>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/admin/absences.css') }}" />
+  </head>
+  <body>
+    {% include 'admin/layouts/sidebar.html' %}
+
+    <div class="contenu-principal">
+      {% include 'admin/layouts/navbar.html' %}
+
+      <div class="zone-contenu">
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for categorie, message in messages %}
+        <div
+          class="alert {{ 'alert-success' if categorie == 'success' else 'alert-danger' }} py-2 mb-3"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+
+        <div class="entete-page">
+          <div>
+            <p class="eyebrow mb-1">Suivi de l'assiduité</p>
+            <h1 class="titre-page">Absences</h1>
+          </div>
+          <button
+            type="button"
+            class="btn btn-institutionnel"
+            data-bs-toggle="modal"
+            data-bs-target="#modalAjouterAbsence"
+          >
+            <i class="bi bi-plus-lg me-1"></i>Ajouter
+          </button>
+        </div>
+
+        <div class="carte-tableau">
+          {% if absences %}
+          <div class="table-responsive">
+            <table class="table table-absences">
+              <thead>
+                <tr>
+                  <th>Élève</th>
+                  <th>Date</th>
+                  <th>Durée (h)</th>
+                  <th>Justifiée</th>
+                  <th>Motif</th>
+                  <th>Trimestre</th>
+                  <th>Année scolaire</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for absence in absences %}
+                <tr>
+                  <td>{{ absence.eleve.prenom }} {{ absence.eleve.nom }}</td>
+                  <td>
+                    {{ absence.date_absence.strftime('%d/%m/%Y') if
+                    absence.date_absence else '—' }}
+                  </td>
+                  <td>{{ absence.duree_heures }}</td>
+                  <td>
+                    <span
+                      class="badge-justifiee {{ 'oui' if absence.justifiee else 'non' }}"
+                    >
+                      {{ 'Justifiée' if absence.justifiee else 'Non justifiée'
+                      }}
+                    </span>
+                  </td>
+                  <td>{{ absence.motif or '—' }}</td>
+                  <td>{{ absence.trimestre or '—' }}</td>
+                  <td>{{ absence.annee_scolaire }}</td>
+                  <td class="text-end">
+                    <form
+                      method="POST"
+                      action="{{ url_for('main.supprimer_absence', absence_id=absence.id) }}"
+                      onsubmit="
+                        return confirm(
+                          'Supprimer définitivement cette absence ?',
+                        );
+                      "
+                    >
+                      <button
+                        type="submit"
+                        class="btn-supprimer"
+                        title="Supprimer"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="table-vide">
+            <i class="bi bi-calendar-x" style="font-size: 2rem"></i>
+            <p class="mt-2 mb-0">Aucune absence enregistrée pour le moment.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL AJOUT ABSENCE ============ -->
+    <div
+      class="modal fade"
+      id="modalAjouterAbsence"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST" action="{{ url_for('main.ajouter_absence') }}">
+            <div class="modal-header modal-header-labo">
+              <h5 class="modal-title font-titre">Ajouter une absence</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Fermer"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Élève *</label>
+                  <select class="form-select" name="eleve_id" required>
+                    <option value="" selected disabled>Choisir un élève</option>
+                    {% for eleve in eleves %}
+                    <option value="{{ eleve.id }}">
+                      {{ eleve.prenom }} {{ eleve.nom }} — {{ eleve.matricule }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Date de l'absence *</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="date_absence"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Durée (heures)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min="0.5"
+                    class="form-control"
+                    name="duree_heures"
+                    value="1.0"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Trimestre</label>
+                  <select class="form-select" name="trimestre">
+                    <option value="" selected disabled>Choisir</option>
+                    <option value="Trimestre 1">Trimestre 1</option>
+                    <option value="Trimestre 2">Trimestre 2</option>
+                    <option value="Trimestre 3">Trimestre 3</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Année scolaire *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="annee_scolaire"
+                    placeholder="ex : 2025-2026"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Justifiée ?</label>
+                  <select class="form-select" name="justifiee">
+                    <option value="non" selected>Non</option>
+                    <option value="oui">Oui</option>
+                  </select>
+                </div>
+                <div class="col-md-8">
+                  <label class="form-label">Motif</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="motif"
+                    placeholder="ex : Maladie, rendez-vous médical..."
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-institutionnel"
+                data-bs-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-institutionnel">
+                Enregistrer l'absence
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

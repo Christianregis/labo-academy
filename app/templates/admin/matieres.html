@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des matières — LABO ACADEMY</title>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/admin/matieres.css') }}" />
+  </head>
+  <body>
+    {% include 'admin/layouts/sidebar.html' %}
+
+    <div class="contenu-principal">
+      {% include 'admin/layouts/navbar.html' %}
+
+      <div class="zone-contenu">
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for categorie, message in messages %}
+        <div
+          class="alert {{ 'alert-success' if categorie == 'success' else 'alert-danger' }} py-2 mb-3"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+
+        <div class="entete-page">
+          <div>
+            <p class="eyebrow mb-1">Gestion académique</p>
+            <h1 class="titre-page">Matières</h1>
+          </div>
+          <button
+            type="button"
+            class="btn btn-institutionnel"
+            data-bs-toggle="modal"
+            data-bs-target="#modalAjouterMatiere"
+          >
+            <i class="bi bi-plus-lg me-1"></i>Ajouter
+          </button>
+        </div>
+
+        {% if matieres %}
+        <div class="row g-3">
+          {% for matiere in matieres %}
+          <div class="col-md-4 col-lg-3">
+            <div class="carte-matiere">
+              <div>
+                <div class="nom-matiere">{{ matiere.nom }}</div>
+                <span class="badge-coefficient"
+                  >Coefficient {{ matiere.coefficient }}</span
+                >
+              </div>
+              <form
+                method="POST"
+                action="{{ url_for('main.supprimer_matiere', matiere_id=matiere.id) }}"
+                onsubmit="return confirm('Supprimer définitivement la matière {{ matiere.nom }} ?');"
+              >
+                <button type="submit" class="btn-supprimer" title="Supprimer">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="table-vide">
+          <i class="bi bi-book" style="font-size: 2rem"></i>
+          <p class="mt-2 mb-0">Aucune matière enregistrée pour le moment.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ============ MODAL AJOUT MATIÈRE ============ -->
+    <div
+      class="modal fade"
+      id="modalAjouterMatiere"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST" action="{{ url_for('main.ajouter_matiere') }}">
+            <div class="modal-header modal-header-labo">
+              <h5 class="modal-title font-titre">Ajouter une matière</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Fermer"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Nom de la matière *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="nom"
+                    placeholder="ex : Mathématiques"
+                    required
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Coefficient</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    class="form-control"
+                    name="coefficient"
+                    value="1.0"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-institutionnel"
+                data-bs-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-institutionnel">
+                Enregistrer la matière
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -25,7 +25,10 @@
     >
       <i class="bi bi-journal-bookmark"></i> Classes
     </a>
-    <a href="#" class="sidebar-link">
+    <a
+      href="{{ url_for('main.gestion_enseignants') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.gestion_enseignants' }}"
+    >
       <i class="bi bi-person-workspace"></i> Enseignants
     </a>
     <a
@@ -34,11 +37,19 @@
     >
       <i class="bi bi-mortarboard"></i> Élèves
     </a>
-    <a href="#" class="sidebar-link"> <i class="bi bi-book"></i> Matières </a>
+    <a
+      href="{{ url_for('main.gestion_matieres') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.gestion_matieres' }}"
+    >
+      <i class="bi bi-book"></i> Matières
+    </a>
     <a href="#" class="sidebar-link">
       <i class="bi bi-clipboard-data"></i> Notes
     </a>
-    <a href="#" class="sidebar-link">
+    <a
+      href="{{ url_for('main.gestion_absences') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.gestion_absences' }}"
+    >
       <i class="bi bi-calendar-x"></i> Absences
     </a>
     <a href="#" class="sidebar-link">

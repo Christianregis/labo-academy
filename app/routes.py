@@ -220,3 +220,180 @@ def supprimer_etablissement(etablissement_id):
 
     flash(f"Établissement {nom_etablissement} supprimé.", "success")
     return redirect(url_for('main.gestion_etablissements'))
+
+
+"Page de gestion des enseignants, avec possibilité d'ajouter et de supprimer des enseignants."
+@main.route('/enseignants')
+@login_required
+def gestion_enseignants():
+    enseignants = Enseignant.query.order_by(Enseignant.nom).all()
+    etablissements = Etablissement.query.order_by(Etablissement.nom).all()
+    return render_template(
+        'admin/enseignants.html',
+        enseignants=enseignants,
+        etablissements=etablissements
+    )
+
+
+@main.route('/enseignants/ajouter', methods=['POST'])
+@login_required
+def ajouter_enseignant():
+    matricule = request.form.get('matricule', '').strip()
+    nom = request.form.get('nom', '').strip()
+    prenom = request.form.get('prenom', '').strip()
+    sexe = request.form.get('sexe', '')
+    matiere_principale = request.form.get('matiere_principale', '').strip()
+    telephone = request.form.get('telephone', '').strip()
+    email = request.form.get('email', '').strip()
+    date_embauche = request.form.get('date_embauche') or None
+    statut = request.form.get('statut', 'actif')
+    etablissement_id = request.form.get('etablissement_id')
+
+    if not nom or not prenom or not sexe or not etablissement_id:
+        flash("Veuillez remplir tous les champs obligatoires.", "error")
+        return redirect(url_for('main.gestion_enseignants'))
+
+    if matricule and Enseignant.query.filter_by(matricule=matricule).first():
+        flash("Ce matricule existe déjà.", "error")
+        return redirect(url_for('main.gestion_enseignants'))
+
+    nouvel_enseignant = Enseignant(
+        matricule=matricule or None,
+        nom=nom,
+        prenom=prenom,
+        sexe=sexe,
+        matiere_principale=matiere_principale,
+        telephone=telephone,
+        email=email,
+        date_embauche=date_embauche,
+        statut=statut,
+        etablissement_id=etablissement_id
+    )
+
+    db.session.add(nouvel_enseignant)
+    db.session.commit()
+
+    flash(f"Enseignant {prenom} {nom} ajouté avec succès.", "success")
+    return redirect(url_for('main.gestion_enseignants'))
+
+
+@main.route('/enseignants/supprimer/<int:enseignant_id>', methods=['POST'])
+@login_required
+def supprimer_enseignant(enseignant_id):
+    enseignant = Enseignant.query.get_or_404(enseignant_id)
+    nom_complet = f"{enseignant.prenom} {enseignant.nom}"
+
+    db.session.delete(enseignant)
+    db.session.commit()
+
+    flash(f"Enseignant {nom_complet} supprimé.", "success")
+    return redirect(url_for('main.gestion_enseignants'))
+
+"Pages de gestion des matieres, Ajout et Suppression"
+
+@main.route('/matieres')
+@login_required
+def gestion_matieres():
+    matieres = Matiere.query.order_by(Matiere.nom).all()
+    return render_template('admin/matieres.html', matieres=matieres)
+
+
+@main.route('/matieres/ajouter', methods=['POST'])
+@login_required
+def ajouter_matiere():
+    nom = request.form.get('nom', '').strip()
+    coefficient = request.form.get('coefficient', '1.0')
+
+    if not nom:
+        flash("Le nom de la matière est obligatoire.", "error")
+        return redirect(url_for('main.gestion_matieres'))
+
+    if Matiere.query.filter_by(nom=nom).first():
+        flash("Cette matière existe déjà.", "error")
+        return redirect(url_for('main.gestion_matieres'))
+
+    nouvelle_matiere = Matiere(
+        nom=nom,
+        coefficient=float(coefficient) if coefficient else 1.0
+    )
+
+    db.session.add(nouvelle_matiere)
+    db.session.commit()
+
+    flash(f"Matière {nom} ajoutée avec succès.", "success")
+    return redirect(url_for('main.gestion_matieres'))
+
+
+@main.route('/matieres/supprimer/<int:matiere_id>', methods=['POST'])
+@login_required
+def supprimer_matiere(matiere_id):
+    matiere = Matiere.query.get_or_404(matiere_id)
+
+    if Note.query.filter_by(matiere_id=matiere.id).first():
+        flash(f"Impossible de supprimer {matiere.nom} : des notes y sont encore rattachées.", "error")
+        return redirect(url_for('main.gestion_matieres'))
+
+    nom_matiere = matiere.nom
+    db.session.delete(matiere)
+    db.session.commit()
+
+    flash(f"Matière {nom_matiere} supprimée.", "success")
+    return redirect(url_for('main.gestion_matieres'))
+
+"Page de gestion des Absences, Ajout et Suppresion"
+
+@main.route('/absences')
+@login_required
+def gestion_absences():
+    absences = Absence.query.order_by(Absence.date_absence.desc()).all()
+    eleves = Eleve.query.order_by(Eleve.nom).all()
+    return render_template(
+        'admin/absences.html',
+        absences=absences,
+        eleves=eleves
+    )
+
+
+@main.route('/absences/ajouter', methods=['POST'])
+@login_required
+def ajouter_absence():
+    eleve_id = request.form.get('eleve_id')
+    date_absence = request.form.get('date_absence')
+    duree_heures = request.form.get('duree_heures', '1.0')
+    justifiee = True if request.form.get('justifiee') == 'oui' else False
+    motif = request.form.get('motif', '').strip()
+    trimestre = request.form.get('trimestre', '')
+    annee_scolaire = request.form.get('annee_scolaire', '').strip()
+
+    if not eleve_id or not date_absence or not annee_scolaire:
+        flash("Veuillez remplir tous les champs obligatoires.", "error")
+        return redirect(url_for('main.gestion_absences'))
+
+    nouvelle_absence = Absence(
+        eleve_id=eleve_id,
+        date_absence=date_absence,
+        duree_heures=float(duree_heures) if duree_heures else 1.0,
+        justifiee=justifiee,
+        motif=motif,
+        trimestre=trimestre,
+        annee_scolaire=annee_scolaire
+    )
+
+    db.session.add(nouvelle_absence)
+    db.session.commit()
+
+    flash("Absence enregistrée avec succès.", "success")
+    return redirect(url_for('main.gestion_absences'))
+
+
+@main.route('/absences/supprimer/<int:absence_id>', methods=['POST'])
+@login_required
+def supprimer_absence(absence_id):
+    absence = Absence.query.get_or_404(absence_id)
+
+    db.session.delete(absence)
+    db.session.commit()
+
+    flash("Absence supprimée.", "success")
+    return redirect(url_for('main.gestion_absences'))
+

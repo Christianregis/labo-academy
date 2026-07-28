@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion des enseignants — LABO ACADEMY</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/enseignants.css') }}">
+</head>
+<body>
+
+{% include 'admin/layouts/sidebar.html' %}
+
+<div class="contenu-principal">
+  {% include 'admin/layouts/navbar.html' %}
+
+  <div class="zone-contenu">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for categorie, message in messages %}
+          <div class="alert {{ 'alert-success' if categorie == 'success' else 'alert-danger' }} py-2 mb-3" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="entete-page">
+      <div>
+        <p class="eyebrow mb-1">Gestion académique</p>
+        <h1 class="titre-page">Enseignants</h1>
+      </div>
+      <button type="button" class="btn btn-institutionnel" data-bs-toggle="modal" data-bs-target="#modalAjouterEnseignant">
+        <i class="bi bi-plus-lg me-1"></i>Ajouter
+      </button>
+    </div>
+
+    <div class="carte-tableau">
+      {% if enseignants %}
+      <div class="table-responsive">
+        <table class="table table-enseignants">
+          <thead>
+            <tr>
+              <th>Matricule</th>
+              <th>Nom &amp; prénom</th>
+              <th>Sexe</th>
+              <th>Matière principale</th>
+              <th>Établissement</th>
+              <th>Contact</th>
+              <th>Statut</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for enseignant in enseignants %}
+            <tr>
+              <td>{{ enseignant.matricule or '—' }}</td>
+              <td>{{ enseignant.prenom }} {{ enseignant.nom }}</td>
+              <td>{{ enseignant.sexe }}</td>
+              <td>{{ enseignant.matiere_principale or '—' }}</td>
+              <td>{{ enseignant.etablissement.nom if enseignant.etablissement else '—' }}</td>
+              <td>{{ enseignant.telephone or enseignant.email or '—' }}</td>
+              <td>
+                <span class="badge-statut {{ 'actif' if enseignant.statut == 'actif' else 'inactif' }}">
+                  {{ enseignant.statut|capitalize }}
+                </span>
+              </td>
+              <td class="text-end">
+                <form method="POST" action="{{ url_for('main.supprimer_enseignant', enseignant_id=enseignant.id) }}"
+                      onsubmit="return confirm('Supprimer définitivement {{ enseignant.prenom }} {{ enseignant.nom }} ?');">
+                  <button type="submit" class="btn-supprimer" title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="table-vide">
+          <i class="bi bi-person-workspace" style="font-size:2rem;"></i>
+          <p class="mt-2 mb-0">Aucun enseignant enregistré pour le moment.</p>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ MODAL AJOUT ENSEIGNANT ============ -->
+<div class="modal fade" id="modalAjouterEnseignant" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('main.ajouter_enseignant') }}">
+        <div class="modal-header modal-header-labo">
+          <h5 class="modal-title font-titre">Ajouter un enseignant</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+
+            <div class="col-md-4">
+              <label class="form-label">Matricule</label>
+              <input type="text" class="form-control" name="matricule">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Nom *</label>
+              <input type="text" class="form-control" name="nom" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Prénom *</label>
+              <input type="text" class="form-control" name="prenom" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Sexe *</label>
+              <select class="form-select" name="sexe" required>
+                <option value="" selected disabled>Choisir</option>
+                <option value="M">Masculin</option>
+                <option value="F">Féminin</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Matière principale</label>
+              <input type="text" class="form-control" name="matiere_principale">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Date d'embauche</label>
+              <input type="date" class="form-control" name="date_embauche">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Téléphone</label>
+              <input type="text" class="form-control" name="telephone">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="email">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Établissement *</label>
+              <select class="form-select" name="etablissement_id" required>
+                <option value="" selected disabled>Choisir un établissement</option>
+                {% for etab in etablissements %}
+                  <option value="{{ etab.id }}">{{ etab.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Statut</label>
+              <select class="form-select" name="statut">
+                <option value="actif" selected>Actif</option>
+                <option value="inactif">Inactif</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-institutionnel" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-institutionnel">Enregistrer l'enseignant</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
