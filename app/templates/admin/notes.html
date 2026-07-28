@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion des notes — LABO ACADEMY</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/notes.css') }}">
+</head>
+<body>
+
+{% include 'admin/layouts/sidebar.html' %}
+
+<div class="contenu-principal">
+  {% include 'admin/layouts/navbar.html' %}
+
+  <div class="zone-contenu">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for categorie, message in messages %}
+          <div class="alert {{ 'alert-success' if categorie == 'success' else 'alert-danger' }} py-2 mb-3" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="entete-page">
+      <div>
+        <p class="eyebrow mb-1">Suivi pédagogique</p>
+        <h1 class="titre-page">Notes</h1>
+      </div>
+      <button type="button" class="btn btn-institutionnel" data-bs-toggle="modal" data-bs-target="#modalAjouterNote">
+        <i class="bi bi-plus-lg me-1"></i>Ajouter
+      </button>
+    </div>
+
+    <div class="carte-tableau">
+      {% if notes %}
+      <div class="table-responsive">
+        <table class="table table-notes">
+          <thead>
+            <tr>
+              <th>Élève</th>
+              <th>Matière</th>
+              <th>Note</th>
+              <th>Type</th>
+              <th>Enseignant</th>
+              <th>Trimestre</th>
+              <th>Année scolaire</th>
+              <th>Date</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for note in notes %}
+            {% set ratio = (note.valeur / note.note_sur * 20) if note.note_sur else 0 %}
+            <tr>
+              <td>{{ note.eleve.prenom }} {{ note.eleve.nom }}</td>
+              <td>{{ note.matiere.nom }}</td>
+              <td>
+                <span class="badge-note {{ 'bonne' if ratio >= 12 else ('moyenne' if ratio >= 10 else 'faible') }}">
+                  {{ note.valeur }} / {{ note.note_sur|int }}
+                </span>
+              </td>
+              <td><span class="badge-type">{{ note.type_evaluation|capitalize }}</span></td>
+              <td>{{ note.enseignant.prenom + ' ' + note.enseignant.nom if note.enseignant else '—' }}</td>
+              <td>{{ note.trimestre }}</td>
+              <td>{{ note.annee_scolaire }}</td>
+              <td>{{ note.date_evaluation.strftime('%d/%m/%Y') if note.date_evaluation else '—' }}</td>
+              <td class="text-end">
+                <form method="POST" action="{{ url_for('main.supprimer_note', note_id=note.id) }}"
+                      onsubmit="return confirm('Supprimer définitivement cette note ?');">
+                  <button type="submit" class="btn-supprimer" title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="table-vide">
+          <i class="bi bi-clipboard-data" style="font-size:2rem;"></i>
+          <p class="mt-2 mb-0">Aucune note enregistrée pour le moment.</p>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ MODAL AJOUT NOTE ============ -->
+<div class="modal fade" id="modalAjouterNote" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('main.ajouter_note') }}">
+        <div class="modal-header modal-header-labo">
+          <h5 class="modal-title font-titre">Ajouter une note</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label class="form-label">Élève *</label>
+              <select class="form-select" name="eleve_id" required>
+                <option value="" selected disabled>Choisir un élève</option>
+                {% for eleve in eleves %}
+                  <option value="{{ eleve.id }}">{{ eleve.prenom }} {{ eleve.nom }} — {{ eleve.matricule }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Matière *</label>
+              <select class="form-select" name="matiere_id" required>
+                <option value="" selected disabled>Choisir une matière</option>
+                {% for matiere in matieres %}
+                  <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Type d'évaluation *</label>
+              <select class="form-select" name="type_evaluation" required>
+                <option value="" selected disabled>Choisir</option>
+                <option value="devoir">Devoir</option>
+                <option value="interrogation">Interrogation</option>
+                <option value="examen">Examen</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Note obtenue *</label>
+              <input type="number" step="0.25" min="0" class="form-control" name="valeur" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Note sur</label>
+              <input type="number" step="0.5" min="1" class="form-control" name="note_sur" value="20">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Enseignant</label>
+              <select class="form-select" name="enseignant_id">
+                <option value="" selected>Non renseigné</option>
+                {% for enseignant in enseignants %}
+                  <option value="{{ enseignant.id }}">{{ enseignant.prenom }} {{ enseignant.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Date de l'évaluation</label>
+              <input type="date" class="form-control" name="date_evaluation">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Trimestre *</label>
+              <select class="form-select" name="trimestre" required>
+                <option value="" selected disabled>Choisir</option>
+                <option value="Trimestre 1">Trimestre 1</option>
+                <option value="Trimestre 2">Trimestre 2</option>
+                <option value="Trimestre 3">Trimestre 3</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Année scolaire *</label>
+              <input type="text" class="form-control" name="annee_scolaire" placeholder="ex : 2025-2026" required>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-institutionnel" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-institutionnel">Enregistrer la note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

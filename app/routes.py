@@ -397,3 +397,79 @@ def supprimer_absence(absence_id):
     flash("Absence supprimée.", "success")
     return redirect(url_for('main.gestion_absences'))
 
+
+"Page de gestion des Notes, Ajout et Suppresion"
+@main.route('/notes')
+@login_required
+def gestion_notes():
+    notes = Note.query.order_by(Note.date_evaluation.desc()).all()
+    eleves = Eleve.query.order_by(Eleve.nom).all()
+    matieres = Matiere.query.order_by(Matiere.nom).all()
+    enseignants = Enseignant.query.order_by(Enseignant.nom).all()
+    return render_template(
+        'admin/notes.html',
+        notes=notes,
+        eleves=eleves,
+        matieres=matieres,
+        enseignants=enseignants
+    )
+
+
+@main.route('/notes/ajouter', methods=['POST'])
+@login_required
+def ajouter_note():
+    eleve_id = request.form.get('eleve_id')
+    matiere_id = request.form.get('matiere_id')
+    enseignant_id = request.form.get('enseignant_id') or None
+    type_evaluation = request.form.get('type_evaluation', '')
+    valeur = request.form.get('valeur', '')
+    note_sur = request.form.get('note_sur', '20')
+    trimestre = request.form.get('trimestre', '')
+    annee_scolaire = request.form.get('annee_scolaire', '').strip()
+    date_evaluation = request.form.get('date_evaluation') or None
+
+    if not eleve_id or not matiere_id or not type_evaluation or not valeur or not trimestre or not annee_scolaire:
+        flash("Veuillez remplir tous les champs obligatoires.", "error")
+        return redirect(url_for('main.gestion_notes'))
+
+    try:
+        valeur = float(valeur)
+        note_sur = float(note_sur) if note_sur else 20.0
+    except ValueError:
+        flash("La note doit être une valeur numérique.", "error")
+        return redirect(url_for('main.gestion_notes'))
+
+    if valeur < 0 or valeur > note_sur:
+        flash(f"La note doit être comprise entre 0 et {note_sur}.", "error")
+        return redirect(url_for('main.gestion_notes'))
+
+    nouvelle_note = Note(
+        eleve_id=eleve_id,
+        matiere_id=matiere_id,
+        enseignant_id=enseignant_id,
+        type_evaluation=type_evaluation,
+        valeur=valeur,
+        note_sur=note_sur,
+        trimestre=trimestre,
+        annee_scolaire=annee_scolaire,
+        date_evaluation=date_evaluation
+    )
+
+    db.session.add(nouvelle_note)
+    db.session.commit()
+
+    flash("Note enregistrée avec succès.", "success")
+    return redirect(url_for('main.gestion_notes'))
+
+
+@main.route('/notes/supprimer/<int:note_id>', methods=['POST'])
+@login_required
+def supprimer_note(note_id):
+    note = Note.query.get_or_404(note_id)
+
+    db.session.delete(note)
+    db.session.commit()
+
+    flash("Note supprimée.", "success")
+    return redirect(url_for('main.gestion_notes'))
+

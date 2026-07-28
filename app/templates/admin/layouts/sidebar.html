@@ -43,7 +43,10 @@
     >
       <i class="bi bi-book"></i> Matières
     </a>
-    <a href="#" class="sidebar-link">
+    <a
+      href="{{ url_for('main.gestion_notes') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.gestion_notes' }}"
+    >
       <i class="bi bi-clipboard-data"></i> Notes
     </a>
     <a
