@@ -473,3 +473,68 @@ def supprimer_note(note_id):
     flash("Note supprimée.", "success")
     return redirect(url_for('main.gestion_notes'))
 
+"Page pour la gestion des résultats annuels, avec possibilité d'ajouter et de supprimer des résultats."
+@main.route('/resultats')
+@login_required
+def gestion_resultats():
+    resultats = ResultatAnnuel.query.order_by(ResultatAnnuel.annee_scolaire.desc(), ResultatAnnuel.rang).all()
+    eleves = Eleve.query.order_by(Eleve.nom).all()
+    return render_template(
+        'admin/resultats.html',
+        resultats=resultats,
+        eleves=eleves
+    )
+
+
+@main.route('/resultats/ajouter', methods=['POST'])
+@login_required
+def ajouter_resultat():
+    eleve_id = request.form.get('eleve_id')
+    annee_scolaire = request.form.get('annee_scolaire', '').strip()
+    moyenne_generale = request.form.get('moyenne_generale', '')
+    rang = request.form.get('rang') or None
+    resultat_final = request.form.get('resultat_final', '')
+    mention = request.form.get('mention', '').strip()
+    date_deliberation = request.form.get('date_deliberation') or None
+
+    if not eleve_id or not annee_scolaire or not resultat_final:
+        flash("Veuillez remplir tous les champs obligatoires.", "error")
+        return redirect(url_for('main.gestion_resultats'))
+
+    if ResultatAnnuel.query.filter_by(eleve_id=eleve_id, annee_scolaire=annee_scolaire).first():
+        flash("Un résultat existe déjà pour cet élève sur cette année scolaire.", "error")
+        return redirect(url_for('main.gestion_resultats'))
+
+    try:
+        moyenne_generale = float(moyenne_generale) if moyenne_generale else None
+    except ValueError:
+        flash("La moyenne générale doit être une valeur numérique.", "error")
+        return redirect(url_for('main.gestion_resultats'))
+
+    nouveau_resultat = ResultatAnnuel(
+        eleve_id=eleve_id,
+        annee_scolaire=annee_scolaire,
+        moyenne_generale=moyenne_generale,
+        rang=rang,
+        resultat_final=resultat_final,
+        mention=mention,
+        date_deliberation=date_deliberation
+    )
+
+    db.session.add(nouveau_resultat)
+    db.session.commit()
+
+    flash("Résultat annuel enregistré avec succès.", "success")
+    return redirect(url_for('main.gestion_resultats'))
+
+
+@main.route('/resultats/supprimer/<int:resultat_id>', methods=['POST'])
+@login_required
+def supprimer_resultat(resultat_id):
+    resultat = ResultatAnnuel.query.get_or_404(resultat_id)
+
+    db.session.delete(resultat)
+    db.session.commit()
+
+    flash("Résultat annuel supprimé.", "success")
+    return redirect(url_for('main.gestion_resultats'))
