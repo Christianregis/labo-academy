@@ -7,19 +7,31 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a href="{{ url_for('main.dashboard') }}" class="sidebar-link active">
+    <a
+      href="{{ url_for('main.dashboard') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.dashboard' }}"
+    >
       <i class="bi bi-grid-1x2-fill"></i> Tableau de bord
     </a>
-    <a href="#" class="sidebar-link">
+    <a
+      href="{{ url_for('main.gestion_etablissements') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.gestion_etablissements' }}"
+    >
       <i class="bi bi-building"></i> Établissements
     </a>
-    <a href="#" class="sidebar-link">
+    <a
+      href="{{ url_for('main.gestion_classes') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.gestion_classes' }}"
+    >
       <i class="bi bi-journal-bookmark"></i> Classes
     </a>
     <a href="#" class="sidebar-link">
       <i class="bi bi-person-workspace"></i> Enseignants
     </a>
-    <a href="#" class="sidebar-link">
+    <a
+      href="{{ url_for('main.gestion_eleves') }}"
+      class="sidebar-link {{ 'active' if request.endpoint == 'main.gestion_eleves' }}"
+    >
       <i class="bi bi-mortarboard"></i> Élèves
     </a>
     <a href="#" class="sidebar-link"> <i class="bi bi-book"></i> Matières </a>

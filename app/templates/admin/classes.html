@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des classes — LABO ACADEMY</title>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/classes.css') }}" />
+
+  </head>
+  <body>
+    {% include 'admin/layouts/sidebar.html' %}
+
+    <div class="contenu-principal">
+      {% include 'admin/layouts/navbar.html' %}
+
+      <div class="zone-contenu">
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for categorie, message in messages %}
+        <div
+          class="alert {{ 'alert-success' if categorie == 'success' else 'alert-danger' }} py-2 mb-3"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+
+        <div class="entete-page">
+          <div>
+            <p class="eyebrow mb-1">Gestion académique</p>
+            <h1 class="titre-page">Classes</h1>
+          </div>
+          <button
+            type="button"
+            class="btn btn-institutionnel"
+            data-bs-toggle="modal"
+            data-bs-target="#modalAjouterClasse"
+          >
+            <i class="bi bi-plus-lg me-1"></i>Ajouter
+          </button>
+        </div>
+
+        <div class="carte-tableau">
+          {% if classes %}
+          <div class="table-responsive">
+            <table class="table table-classes">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Niveau</th>
+                  <th>Filière</th>
+                  <th>Année scolaire</th>
+                  <th>Établissement</th>
+                  <th>Effectif</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for classe in classes %}
+                <tr>
+                  <td>{{ classe.nom }}</td>
+                  <td>{{ classe.niveau }}</td>
+                  <td>{{ classe.filiere or '—' }}</td>
+                  <td>{{ classe.annee_scolaire }}</td>
+                  <td>
+                    {{ classe.etablissement.nom if classe.etablissement else '—'
+                    }}
+                  </td>
+                  <td>
+                    {% set effectif_actuel = classe.eleves|length %}
+                    <span
+                      class="badge-effectif {{ 'complet' if classe.effectif_max and effectif_actuel >= classe.effectif_max }}"
+                    >
+                      {{ effectif_actuel }}{% if classe.effectif_max %} / {{
+                      classe.effectif_max }}{% endif %}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <form
+                      method="POST"
+                      action="{{ url_for('main.supprimer_classe', classe_id=classe.id) }}"
+                      onsubmit="return confirm('Supprimer définitivement la classe {{ classe.nom }} ?');"
+                    >
+                      <button
+                        type="submit"
+                        class="btn-supprimer"
+                        title="Supprimer"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="table-vide">
+            <i class="bi bi-journal-bookmark" style="font-size: 2rem"></i>
+            <p class="mt-2 mb-0">Aucune classe enregistrée pour le moment.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL AJOUT CLASSE ============ -->
+    <div
+      class="modal fade"
+      id="modalAjouterClasse"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST" action="{{ url_for('main.ajouter_classe') }}">
+            <div class="modal-header modal-header-labo">
+              <h5 class="modal-title font-titre">Ajouter une classe</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Fermer"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Nom de la classe *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="nom"
+                    placeholder="ex : 6e A"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Niveau *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="niveau"
+                    placeholder="ex : 6e"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Filière</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="filiere"
+                    placeholder="ex : Scientifique"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Année scolaire *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="annee_scolaire"
+                    placeholder="ex : 2025-2026"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Effectif maximum</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="effectif_max"
+                    min="1"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Établissement *</label>
+                  <select class="form-select" name="etablissement_id" required>
+                    <option value="" selected disabled>
+                      Choisir un établissement
+                    </option>
+                    {% for etab in etablissements %}
+                    <option value="{{ etab.id }}">{{ etab.nom }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-institutionnel"
+                data-bs-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-institutionnel">
+                Enregistrer la classe
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
