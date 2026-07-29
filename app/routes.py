@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from app.models import Etablissement, Classe, Enseignant, Eleve, ResultatAnnuel, Note, Absence, Matiere
@@ -53,7 +55,7 @@ def ajouter_eleve():
     nom = request.form.get('nom', '').strip()
     prenom = request.form.get('prenom', '').strip()
     sexe = request.form.get('sexe', '')
-    date_naissance = request.form.get('date_naissance') or None
+    date_naissance_request = request.form.get('date_naissance') or None
     lieu_naissance = request.form.get('lieu_naissance', '').strip()
     adresse = request.form.get('adresse', '').strip()
     nom_parent = request.form.get('nom_parent', '').strip()
@@ -71,6 +73,11 @@ def ajouter_eleve():
         flash("Ce matricule existe déjà.", "error")
         return redirect(url_for('main.gestion_eleves'))
 
+    date_naissance = datetime.strptime(
+        date_naissance_request,
+        "%Y-%m-%d"
+    ).date() if date_naissance_request else None
+    
     nouvel_eleve = Eleve(
         matricule=matricule,
         nom=nom,
@@ -245,7 +252,7 @@ def ajouter_enseignant():
     matiere_principale = request.form.get('matiere_principale', '').strip()
     telephone = request.form.get('telephone', '').strip()
     email = request.form.get('email', '').strip()
-    date_embauche = request.form.get('date_embauche') or None
+    date_embauche_request = request.form.get('date_embauche') or None
     statut = request.form.get('statut', 'actif')
     etablissement_id = request.form.get('etablissement_id')
 
@@ -256,7 +263,10 @@ def ajouter_enseignant():
     if matricule and Enseignant.query.filter_by(matricule=matricule).first():
         flash("Ce matricule existe déjà.", "error")
         return redirect(url_for('main.gestion_enseignants'))
-
+    date_embauche = datetime.strptime(
+        date_embauche_request,
+        "%Y-%m-%d"
+    ).date()
     nouvel_enseignant = Enseignant(
         matricule=matricule or None,
         nom=nom,
@@ -358,16 +368,23 @@ def gestion_absences():
 @login_required
 def ajouter_absence():
     eleve_id = request.form.get('eleve_id')
-    date_absence = request.form.get('date_absence')
+    date_absence_request = request.form.get('date_absence')
     duree_heures = request.form.get('duree_heures', '1.0')
     justifiee = True if request.form.get('justifiee') == 'oui' else False
     motif = request.form.get('motif', '').strip()
     trimestre = request.form.get('trimestre', '')
     annee_scolaire = request.form.get('annee_scolaire', '').strip()
-
+    
+    date_absence = datetime.strptime(
+        date_absence_request,
+        "%Y-%m-%d"
+    ).date() if date_absence_request else None
+    
     if not eleve_id or not date_absence or not annee_scolaire:
         flash("Veuillez remplir tous les champs obligatoires.", "error")
         return redirect(url_for('main.gestion_absences'))
+    
+
 
     nouvelle_absence = Absence(
         eleve_id=eleve_id,
@@ -426,7 +443,7 @@ def ajouter_note():
     note_sur = request.form.get('note_sur', '20')
     trimestre = request.form.get('trimestre', '')
     annee_scolaire = request.form.get('annee_scolaire', '').strip()
-    date_evaluation = request.form.get('date_evaluation') or None
+    date_evaluation_request = request.form.get('date_evaluation') or None
 
     if not eleve_id or not matiere_id or not type_evaluation or not valeur or not trimestre or not annee_scolaire:
         flash("Veuillez remplir tous les champs obligatoires.", "error")
@@ -443,6 +460,11 @@ def ajouter_note():
         flash(f"La note doit être comprise entre 0 et {note_sur}.", "error")
         return redirect(url_for('main.gestion_notes'))
 
+    date_evaluation = datetime.strptime(
+        date_evaluation_request,
+        "%Y-%m-%d"
+    ).date() if date_evaluation_request else datetime.today().date()
+    
     nouvelle_note = Note(
         eleve_id=eleve_id,
         matiere_id=matiere_id,
@@ -495,7 +517,7 @@ def ajouter_resultat():
     rang = request.form.get('rang') or None
     resultat_final = request.form.get('resultat_final', '')
     mention = request.form.get('mention', '').strip()
-    date_deliberation = request.form.get('date_deliberation') or None
+    date_deliberation_request = request.form.get('date_deliberation') or None
 
     if not eleve_id or not annee_scolaire or not resultat_final:
         flash("Veuillez remplir tous les champs obligatoires.", "error")
@@ -511,6 +533,11 @@ def ajouter_resultat():
         flash("La moyenne générale doit être une valeur numérique.", "error")
         return redirect(url_for('main.gestion_resultats'))
 
+    date_deliberation = datetime.strptime(
+        date_deliberation_request,
+        "%Y-%m-%d"
+    ).date() if date_deliberation_request else None
+    
     nouveau_resultat = ResultatAnnuel(
         eleve_id=eleve_id,
         annee_scolaire=annee_scolaire,
